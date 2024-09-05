@@ -1,0 +1,29 @@
+# Virtual environment
+env/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Django specific
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# Local Django settings
+.env
+PJAPI/settings/local.py  # If you have a local settings file
+
+# Migrations
+*/migrations/*
+
+# Static and media files
+/static/
+/media/
+
+# Node.js specific (if you use React Native)
+node_modules/
+*.log
