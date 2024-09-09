@@ -7,11 +7,11 @@ from .serializers import PhilosopherSerializer
 
 # Create your views here.
 
-def analyze_user_input(user_text): # returns keywords and sentiment
+def analyze_user_input(user_text): #2 returns keywords and sentiment maybe the transformer here?
     return None
 
-def match_philosopher(user_text): # returns matched philosopher
+def match_philosopher(user_text): #3 returns matched philosopher
     return None
 
-def user_input(request): # returns the response
+def user_input(request): #1 returns the response
     return None
