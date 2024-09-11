@@ -27,3 +27,6 @@ PJAPI/settings/local.py  # If you have a local settings file
 # Node.js specific (if you use React Native)
 node_modules/
 *.log
+
+# txt files
+ThoughtsOfImprovementsAndDirection.txt

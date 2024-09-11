@@ -1,0 +1,9 @@
+<h2>Matched Philosopher: {{ philosopher.name }}</h2>
+<p>{{ philosopher.bio }}</p>
+<p><strong>School of Thought:</strong> {{ philosopher.school_of_thought }}</p>
+<p><strong>Main Works:</strong> {{ philosopher.works }}</p>
+<p><strong>Quotes:</strong> {{ philosopher.quotes }}</p>
+{% if philosopher.image_url %}
+    <p><strong>Image:</strong></p>
+    <img src="{{ philosopher.image_url }}" alt="{{ philosopher.name }}" style="max-width: 100%; height: auto;">
+{% endif %}
