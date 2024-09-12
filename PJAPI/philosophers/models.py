@@ -8,12 +8,11 @@ class Philosopher(models.Model):
     school_of_thought = models.CharField(max_length=100)
     core_ideas = models.JSONField(default=list)
     tone = models.CharField(max_length=100)
-    works = models.JSONField(default=list) 
+    works = models.JSONField(default=list)
     era = models.CharField(max_length=50)
     quotes = models.JSONField(default=list)
     image_url = models.URLField(max_length=200, blank=True, null=True)
     
-
     def __str__(self):
         return self.name
     
