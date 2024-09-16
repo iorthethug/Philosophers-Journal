@@ -4,14 +4,16 @@ from django.shortcuts import render
 from nltk.sentiment import SentimentIntensityAnalyzer
 import nltk
 from django.db.models import Q
-
 from .models import Philosopher, UserInput
 from .serializers import PhilosopherSerializer
+from transformers import AutoTokenizer
 
 nltk.download('vader_lexicon')
+tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/all-MiniLM-L6-v2') #why this one
 
 def analyze_user_input(user_text): #2 returns keywords and sentiment maybe the transformer here? NLKT
-    keywords = user_text.split() # simple tokenization UPGRADE LATER
+    #keywords = user_text.split() # simple tokenization UPGRADE LATER
+    keywords = tokenizer.tokenize(user_text) #upgraded tokenization
 
     # sentiment analysis
     sia = SentimentIntensityAnalyzer()

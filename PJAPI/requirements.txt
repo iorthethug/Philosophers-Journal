@@ -3,3 +3,4 @@ djangorestframework
 django-cors-headers
 sqlparse
 nltk
+sentence-transformers
