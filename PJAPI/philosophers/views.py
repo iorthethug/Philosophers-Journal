@@ -8,6 +8,7 @@ from django.db.models import Q
 from .models import Philosopher, UserInput
 from .serializers import PhilosopherSerializer
 from sentence_transformers import SentenceTransformer, SimilarityFunction
+from transformers import pipeline
 
 import logging
 
@@ -19,22 +20,24 @@ nltk.download('vader_lexicon')
 model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2') #lightweight and efficient, can use BERT instead but its heavier
 model.similarity_fn_name = SimilarityFunction.COSINE
 
+# Initialize sentiment analysis pipeline from Hugging Face's transformers
+sentiment_pipeline = pipeline('text-classification')
+
+sia = SentimentIntensityAnalyzer()
+
 def analyze_user_input(user_text): # returns keywords, sentiment and embeddings
-    #keywords = user_text.split() # simple tokenization
+
     keywords = model.tokenizer.tokenize(user_text) #upgraded tokenization
 
     embeddings = model.encode(user_text)
-
-    # sentiment analysis
-    sia = SentimentIntensityAnalyzer()
-    sentiment_score = sia.polarity_scores(user_text)['compound']
-
-    if sentiment_score > 0:
-        sentiment = 'Positive'
-    elif sentiment_score < 0:
-        sentiment = 'Negative'
-    else:
-        sentiment = 'Neutral'
+    
+    # VADER sentiment analysis
+    sentiment_score_vader = sia.polarity_scores(user_text)['compound']
+    sentiment_label_vader = 'Positive' if sentiment_score_vader > 0.33 else 'Negative' if sentiment_score_vader < -0.33 else 'Neutral'
+    
+    logging.info(f"Sentiment score with VADER: {sentiment_score_vader} and label: {sentiment_label_vader}")
+    
+    sentiment = sentiment_label_vader
     
     return keywords, sentiment, embeddings
 
@@ -51,23 +54,34 @@ def match_philosopher(user_text): # returns matched philosopher based on keyword
 def match_philosopher_transformer(user_text): # returns matched philosopher based on transformer embeddings
     keywords, sentiment, user_embeddings = analyze_user_input(user_text)
 
+
     philosophers = Philosopher.objects.all()
 
     highest_similarity = 0
     matched_philosopher = None
 
     for philosopher in philosophers:
-        philosopher_bio = philosopher.bio
-        philosopher_embeddings = model.encode(philosopher_bio)# only using bio for now
-        # calculate cosine similarity between user input and philosopher bio
-        similarity_scores = model.similarity(user_embeddings, philosopher_embeddings)
 
-        # Get the maximum similarity score
-        max_similarity_score = similarity_scores.max().item()
-        logging.info(f"Similarity score with {philosopher.name}: {max_similarity_score}")
+        philosopher_tone_string = ' '.join(philosopher.tone) if isinstance(philosopher.tone, list) else philosopher.tone
+
+        philosopher_embeddings_bio = model.encode(philosopher.bio)
+        philosopher_embeddings_quotes = model.encode(philosopher.quotes)
+
+        similarity_scores_bio = model.similarity(user_embeddings, philosopher_embeddings_bio)
+        similarity_scores_quotes = model.similarity(user_embeddings, philosopher_embeddings_quotes)
+
+        max_similarity_score_bio = similarity_scores_bio.max().item()
+        max_similarity_score_quotes = similarity_scores_quotes.max().item()
+
+        sentiment_match_score = 1 if philosopher_tone_string == sentiment else 0 # bonus score if sentiment matches
+
+        # Similarity scores and sentiment match score
+        composite_score = (0.9 * (max_similarity_score_bio + max_similarity_score_quotes)) + (0.2 * sentiment_match_score)
+
+        logging.info(f"Scoring with {philosopher.name}: comp={composite_score}, bio={max_similarity_score_bio}, quotes={max_similarity_score_quotes}, sentiment={sentiment_match_score}")
         
-        if max_similarity_score > highest_similarity:
-            highest_similarity = max_similarity_score
+        if composite_score > highest_similarity:
+            highest_similarity = composite_score
             matched_philosopher = philosopher
 
     logging.info(f"Highest similarity score: {highest_similarity} with philosopher: {matched_philosopher.name}")
