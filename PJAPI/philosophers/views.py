@@ -95,7 +95,7 @@ def user_input_view(request): # returns the result of the user input
 
         # save user input and match to database for further improvement
         user_input = UserInput(user_text=user_text, matched_philosopher=matched_philosopher)
-        user_input.save()
+        user_input.save() #not sure where its saved??
 
         return render(request, 'result.html', {'philosopher': matched_philosopher})
     return render(request, 'input_form.html')
