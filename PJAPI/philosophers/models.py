@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 
-class Philosopher(models.Model):
+class Philosopher(models.Model): # Philosopher model
     name = models.CharField(max_length=100)
     bio = models.TextField()
     school_of_thought = models.CharField(max_length=100)
@@ -16,7 +16,7 @@ class Philosopher(models.Model):
     def __str__(self):
         return self.name
     
-class UserInput(models.Model):
+class UserInput(models.Model): # UserInput model
     user_text = models.TextField()
     sentiment = models.CharField(max_length=50)
     keywords = models.TextField()
