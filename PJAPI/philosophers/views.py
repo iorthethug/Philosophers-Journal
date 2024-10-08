@@ -62,7 +62,24 @@ def match_philosopher_transformer(user_text): # returns matched philosopher base
 
     for philosopher in philosophers:
 
+        # Transform the philosopher's bio, quotes and school to text embeddings
+        philosopjer_bio_string = ' '.join(philosopher.bio) if isinstance(philosopher.bio, list) else philosopher.bio
+        philosopher_quotes_string = ' '.join(philosopher.quotes) if isinstance(philosopher.quotes, list) else philosopher.quotes
+        philosopher_school_string = ' '.join(philosopher.school_of_thought) if isinstance(philosopher.school_of_thought, list) else philosopher.school_of_thought
+
+        # Get the sentiment of the philosopher based on bio, quotes and school of thought with sia
+        sentiment_bio = sia.polarity_scores(philosopjer_bio_string)['compound']
+        sentiment_quotes = sia.polarity_scores(philosopher_quotes_string)['compound']
+        sentiment_school = sia.polarity_scores(philosopher_school_string)['compound']
+
+        sentiment_label_bio = 'Positive' if sentiment_bio > 0.33 else 'Negative' if sentiment_bio < -0.33 else 'Neutral'
+        sentiment_label_quotes = 'Positive' if sentiment_quotes > 0.33 else 'Negative' if sentiment_quotes < -0.33 else 'Neutral'
+        sentiment_label_school = 'Positive' if sentiment_school > 0.33 else 'Negative' if sentiment_school < -0.33 else 'Neutral'
+
+        logging.info(f"Sentiment score user: {sentiment} and philosopher: {philosopher.name} with VADER: bio={sentiment_bio} ({sentiment_label_bio}), quotes={sentiment_quotes} ({sentiment_label_quotes}), school={sentiment_school} ({sentiment_label_school})")
+
         philosopher_tone_string = ' '.join(philosopher.tone) if isinstance(philosopher.tone, list) else philosopher.tone
+
 
         philosopher_embeddings_bio = model.encode(philosopher.bio)
         philosopher_embeddings_quotes = model.encode(philosopher.quotes)

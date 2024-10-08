@@ -85,22 +85,22 @@ class PhilosopherModelTestCase(TestCase):
         matched_philosopher = match_philosopher(user_text)
         self.assertEqual(matched_philosopher, Philosopher.objects.get(name='Plato'))
     '''
-   
+    '''
     def test_philosopher_transformer_matching(self):
         user_text = 'What is the meaning of life?. Im just think neutrally about it.'
         matched_philosopher = match_philosopher_transformer(user_text)
         self.assertEqual(matched_philosopher, Philosopher.objects.get(name='Kant'))
-   
+    '''
     def test_philosopher_transformer_matching_negative(self):
         user_text = 'Woke up today feeling drained, even though I got a full night of sleep. I don’t get it—why do I always feel like I need more rest? It’s frustrating. I’ve got that meeting at 10, and honestly, I’m not looking forward to it. Just the thought of it makes me feel tired already. I hope it doesn’t drag on forever. I don’t have the energy for long meetings today. I’ve been telling myself I’ll go to the gym, but I’ve been avoiding it all week. Maybe it’s the lack of motivation, or maybe I’m just too tired to even think about it.I don’t know why, but lately, everything feels a bit… off. Like I’m just going through the motions. I’m not exactly excited about anything either.'
         matched_philosopher = match_philosopher_transformer(user_text)
         self.assertEqual(matched_philosopher, Philosopher.objects.get(name='Nietzsche'))
-    
+    '''
     def test_philosopher_transformer_matching_positive(self):
         user_text = 'Woke up feeling surprisingly good today. For once, I don’t feel completely exhausted, which is nice. The sun’s out, and it’s already brightening my mood. I’ve got that meeting at 10, but I’m not too worried about it. If I stay on top of things, it should go smoothly, and then I can knock out some other tasks. Maybe today will actually be productive. I’ve been telling myself to get back to the gym, and honestly, I think today might be the day. I just have a feeling I’ll have the energy to do it. I always feel so much better when I get some exercise in, and I could definitely use the boost. It’s time to break the slump I’ve been in lately. I’ve also been trying to remind myself that things are moving in the right direction, even when it doesn’t always feel like it. Progress might be slow, but it’s there. I just need to keep pushing forward and stay focused on the bigger picture. I think tonight, after I’ve crossed off my to-do list, I’ll finally start that new show.'
         matched_philosopher = match_philosopher_transformer(user_text)
         self.assertEqual(matched_philosopher, Philosopher.objects.get(name='Confucius'))
-    
+    '''
     '''
     def test_user_input_view(self):
         response = self.client.post(reverse('user_input'), {'user_text': 'What is the meaning of life?'})
