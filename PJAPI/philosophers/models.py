@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-
+#I think I dont need all these fields, I will remove some of them
 class Philosopher(models.Model): # Philosopher model
     name = models.CharField(max_length=100)
     bio = models.TextField()
